@@ -1,0 +1,80 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+    var nguoiDung = ViewBag.NguoiDung as WebXemPhim.Models.NguoiDung;
+}
+
+@section Script {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/JS/user-script-info.js"></script>
+}
+<section class="info-container container">
+    <div class="info-sidebar">
+        <p class="active">Thông tin cá nhân</p>
+        <p>Thay đổi thông tin</p>
+        <p>Đổi mật khẩu</p>
+    </div>
+    <div class="info-content">
+        <div class="info-steep info-main show">
+            <div class="avatar">
+                <img src="~/Image_User/avatar.png" alt="">
+            </div>
+            <ul>
+                <li>Họ và tên: @nguoiDung.TenND</li>
+                <li>Ngày sinh: @nguoiDung.NgaySinh.Value.ToString("dd/MM/yyyy")</li>
+                <li>Email: @nguoiDung.Email</li>
+            </ul>
+        </div>
+        <div class="info-steep info-change ">
+            <h2 class="title">Thay đổi thông tin cá nhân</h2>
+            <div class="form-group">
+                <div class="input-group">
+                    <p>Họ và tên</p>
+                    <input type="text" name="nameuser" value="@nguoiDung.TenND" placeholder="Tên người dùng">
+                    <span>Tên người dùng không được để trống</span>
+                </div>
+                <div class="input-group">
+                    <p>Email</p>
+                    <input type="email" name="email" value="@nguoiDung.Email" placeholder="Email">
+                    <span>Tên người dùng không được để trống</span>
+                </div>
+                <div class="input-group">
+                    <p>Ngày sinh</p>
+                    <input type="date" name="birthday" value="@nguoiDung.NgaySinh.Value.ToString("yyyy-MM-dd")">
+                    <span>Tên người dùng không được để trống</span>
+                </div>
+
+                <div class="input-group">
+                    <p>Xác nhận mật khẩu</p>
+                    <input type="password" name="currentpass"  placeholder="Nhập mật khẩu hiện tại">
+                    <span>Tên người dùng không được để trống</span>
+                </div>
+            </div>
+            <button class="btn btn-primary">Cập nhật</button>
+        </div>
+        <div class="info-steep info-changepass">
+            <h2 class="title">Đổi mật khẩu</h2>
+            <div class="form-group">
+                <div class="input-group">
+                    <p>Mật khẩu hiện tại</p>
+                    <input type="password" name="currentpass" placeholder="Mật khẩu hiện tại">
+                    <span>Tên người dùng không được để trống</span>
+                </div>
+                <div class="input-group">
+                    <p>Mật khẩu mới</p>
+                    <input type="password" name="newpass" placeholder="Mật khẩu mới">
+                    <span>Tên người dùng không được để trống</span>
+                </div>
+                <div class="input-group">
+                    <p>Xác nhận mật khẩu</p>
+                    <input type="password" name="confirmpass" placeholder="Xác nhận mật khẩu">
+                    <span>Tên người dùng không được để trống</span>
+                </div>
+            </div>
+            <button class="btn btn-primary">Cập nhật</button>
+        </div>
+    </div>
+</section>
+
+

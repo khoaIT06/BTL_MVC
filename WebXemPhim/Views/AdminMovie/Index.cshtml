@@ -1,0 +1,454 @@
+﻿@{
+    ViewBag.TitlePage = "Quản lý phim";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@model List<WebXemPhim.Models.Phim>
+
+@section ScriptMulti{
+    <script src="~/JS/multi-select-tag.js"></script>
+}
+
+@section ScriptMovie{
+    <script src="~/JS/script-form-movie.js"></script>
+    <script src="~/JS/script-check-movie.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.movie-text-search').on('input', function() {
+                var searchTerm = $(this).val();
+
+                $.ajax({
+                    url: '@Url.Action("SearchMovies", "AdminMovie")',
+                    type: 'GET',
+                    data: { searchTerm: searchTerm },
+                    success: function(data) {
+                        var tbody = $('tbody');
+                        tbody.empty();
+
+                        $.each(data, function(index, movie) {
+                            tbody.append(
+                                '<tr>' +
+                                    '<td class="movie-id">' + movie.IDPhim + '</td>' +
+                                    '<td><img src="' + movie.LinkAnh + '" alt="ảnh" class="movie-img"></td>' +
+                                    '<td class="movie-name">' + movie.TenPhim + '</td>' +
+                                    '<td class="movie-director">' + movie.DaoDien + '</td>' +
+                                    '<td class="movie-nation">' + movie.TenQG + '</td>' +
+                                    '<td class="movie-year">' + movie.NamSX + '</td>' +
+                                    '<td class="movie-time">' + movie.ThoiLuong + '</td>' +
+                                    '<td class="movie-quality">' + movie.ChatLuong + '</td>' +
+                                    '<td class="movie-language">' + movie.NgonNgu + '</td>' +
+                                    '<td class="movie-category">' + movie.TheLoai + '</td>' +
+                                    '<td class="movie-view">' + movie.LuotXem + '</td>' +
+                                    '<td class="movie-description">' + movie.MoTa + '</td>' +
+                                    '<td class="movie-link">' + movie.LinkPhim + '</td>' +
+                                    '<td class="movie-episode">' + movie.Tap + '</td>' +
+                                    '<td class="movie-set">' + movie.TenBo + '</td>' +
+                                    '<td class="movie-action">' +
+                                        '<div class="btn-change"><i class="ri-pencil-fill icon-change js-changeMovie"></i></div>' +
+                                        '<div class="btn-deleteMovie"><i class="ri-delete-bin-line icon-delete js-deleteMovie"></i></div>' +
+                                    '</td>' +
+                                '</tr>'
+                            );
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+<div class="wrapper-content">
+    <div class="table-header">
+        <h3 class="main-title">
+            Thông tin phim
+        </h3>
+        <div class="movie-search">
+            <input type="text" class="movie-text-search" placeholder="Tìm kiếm...">
+            <i class="ri-search-line icon-search"></i>
+        </div>
+        <div class="add-movie js-add-movie"><i class="ri-add-large-line icon-add"></i>Thêm phim</div>
+    </div>
+</div>
+
+<div class="wrapper-content wrapper-content-body">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Ảnh</th>
+                <th>Tên phim</th>
+                <th>Đạo diễn</th>
+                <th>Quốc gia</th>
+                <th>Năm sản xuất</th>
+                <th>Thời lượng</th>
+                <th>Chất lượng</th>
+                <th>Ngôn ngữ</th>
+                <th>Thể loại</th>
+                <th>Lượt xem</th>
+                <th>Mô tả</th>
+                <th>Link phim</th>
+                <th>Tập</th>
+                <th>Tên bộ</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="movie-id">@item.IDPhim</td>
+                    <td><img src="@item.LinkAnh" alt="ảnh" class="movie-img"></td>
+                    <td class="movie-name">@item.TenPhim</td>
+                    <td class="movie-director">@item.DaoDien</td>
+                    <td data-nation-value="@item.QuocGia.IDQG" class="movie-nation">@item.QuocGia.TenQG</td>
+                    <td class="movie-year">@item.NamSX</td>
+                    <td class="movie-time">@item.ThoiLuong</td>
+                    <td class="movie-quality">@item.ChatLuong</td>
+                    <td class="movie-language">@item.NgonNgu</td>
+                    <td class="movie-category">@item.TheLoai</td>
+                    <td class="movie-view">@item.LuotXem</td>
+                    <td class="movie-description">@item.MoTa</td>
+                    <td class="movie-link">@item.LinkPhim</td>
+                    <td class="movie-episode">@item.Tap</td>
+                    <td data-set-value="@item.Bo.IDBo" class="movie-set">@item.Bo.TenBo</td>
+                    <td class="movie-action">
+                        <div class="btn-change">
+                            <i class="ri-pencil-fill icon-change js-changeMovie"></i>
+                        </div>
+                        <div class="btn-deleteMovie">
+                            <i class="ri-delete-bin-line icon-delete js-deleteMovie"></i>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @{
+        var page = Request.QueryString["page"];
+        int currentPage = 1;
+        if (!string.IsNullOrEmpty(page))
+        {
+            int.TryParse(page, out currentPage);
+        }
+    }
+    <div class="pagination">
+        @{
+            int PrevPage = ViewBag.Page - 1;
+            if (PrevPage <= 0)
+            {
+                PrevPage = 1;
+            }
+            int NextPage = ViewBag.Page + 1;
+            if (NextPage > ViewBag.NoOfPages)
+            {
+                NextPage = ViewBag.NoOfPages;
+            }
+        }
+        <a href="/AdminMovie/Index?page=@PrevPage" class="prev">Trước</a>
+        @for (int i = 0; i < ViewBag.NoOfPages; i++)
+        {
+            var pageIndex = i + 1;
+            <a href="/AdminMovie/Index?page=@pageIndex" class="@(pageIndex == currentPage ? "page-current" : "")">@pageIndex</a>
+        }
+        <a href="/AdminMovie/Index?page=@NextPage" class="next">Sau</a>
+    </div>
+
+    <form id="form-movie-add" class="form-with-toast" action="~/AdminMovie/AddMovie" method="post" enctype="multipart/form-data">
+        <div class="modal js-modal-addMovie">
+            <div class="modal-container js-modal-addMovie-container">
+                <div class="modal-close js-modal-addMovie-close">
+                    <i class="ri-close-large-line"></i>
+                </div>
+
+                <header class="modal-header modal-header-movies">
+                    <i class="ri-movie-2-line"></i>
+                    Thêm phim
+                </header>
+
+                <div class="modal-content">
+                    <div class="modal-twoCol">
+                        <label for="movie-name" class="modal-label">
+                            Tên phim
+                            <input name="TenPhim" id="movie-name" type="text" class="js-movie-name modal-input" placeholder="Tên phim...">
+                            <span class="check-error name-addMovie-error"></span>
+                        </label>
+
+                        <label for="movie-director" class="modal-label">
+                            Đạo diễn
+                            <input name="DaoDien" id="movie-director" type="text" class="js-movie-director modal-input" placeholder="Tên đạo diễn...">
+                            <span class="check-error director-addMovie-error"></span>
+                        </label>
+
+
+                        <label for="movie-nation" class="modal-label">
+                            Quốc gia
+                            <select name="IDQG" id="movie-nation" class="modal-input js-movie-nation">
+                                @foreach (var nation in ViewBag.Nation)
+                                {
+                                    <option value="@nation.IDQG">@nation.TenQG</option>
+                                }
+                            </select>
+                            <span class="check-error nation-addMovie-error"></span>
+                        </label>
+
+
+                        <label for="movie-category-add" class="modal-label">
+                            Thể loại
+                            <select name="TheLoai[]" id="movie-category-add" multiple class="modal-input js-movie-category">
+                                @foreach (var cate in ViewBag.Category)
+                                {
+                                    <option value="@cate.TenTheLoai">@cate.TenTheLoai</option>
+                                }
+                            </select>
+                            <span class="check-error category-addMovie-error"></span>
+                        </label>
+
+
+                        <label for="movie-year" class="modal-label">
+                            Năm sản xuất
+                            <input name="NamSX" id="movie-year" type="number" class="js-movie-year modal-input" placeholder="Năm sản xuất..."
+                                   min="1900">
+                            <span class="check-error year-addMovie-error"></span>
+                        </label>
+
+
+                        <label for="movie-time" class="modal-label">
+                            Thời lượng
+                            <input name="ThoiLuong" id="movie-time" type="text" class="js-movie-time modal-input" placeholder="Thời lượng...">
+                            <span class="check-error time-addMovie-error"></span>
+                        </label>
+
+                        <label for="movie-quality" class="modal-label">
+                            Chất lượng
+                            <input name="ChatLuong" id="movie-quality" type="text" class="js-movie-quality modal-input" placeholder="Chất lượng....">
+                            <span class="check-error quality-addMovie-error"></span>
+                        </label>
+
+                        <label for="movie-language" class="modal-label">
+                            Ngôn ngữ
+                            <input name="NgonNgu" id="movie-language" type="text" class="js-movie-language modal-input" placeholder="Ngôn ngữ...">
+                            <span class="check-error language-addMovie-error"></span>
+                        </label>
+
+                        <label for="movie-link" class="modal-label">
+                            Link phim
+                            <input name="MovieVideoLink" id="movie-link" type="text" class="js-movie-link modal-input" placeholder="Link phim...">
+                            <span class="check-error link-addMovie-error"></span>
+                        </label>
+
+                        <label for="movie-episode" class="modal-label">
+                            Tập
+                            <input name="Tap" id="movie-episode" type="number" class="js-movie-episode modal-input" placeholder="Tập..." min="1">
+                            <span class="check-error episode-addMovie-error"></span>
+                        </label>
+
+                        <label for="movie-set" class="modal-label">
+                            Tên bộ
+                            <select name="IDBo" id="movie-set" class="modal-input">
+                                @foreach (var set in ViewBag.Set)
+                                {
+                                    <option value="@set.IDBo">@set.TenBo</option>
+                                }
+                            </select>
+                            <span class="check-error set-addMovie-error"></span>
+                        </label>
+                        <label for="movie-img" class="modal-label">
+                            Ảnh
+                            <input name="MovieImg" id="movie-img" type="file" class="js-movie-img modal-input" accept="image/*">
+                            <span class="check-error img-addMovie-error"></span>
+                        </label>
+                    </div>
+
+                    <div class="modal-col">
+                        <label for="movie-video" class="modal-label">
+                            Đăng tải video
+                            <input name="MovieVideoFile" id="movie-video" type="file" class="js-movie-video modal-input" accept="video/*">
+                            <span class="check-error video-addMovie-error"></span>
+                        </label>
+                        <label for="movie-description" class="modal-label">
+                            Mô tả
+                            <textarea name="MoTa" id="movie-description" rows="2" type="textarea" class="js-movie-description modal-input" placeholder="Mô tả..."></textarea>
+                            <span class="check-error description-addMovie-error"></span>
+                        </label>
+                    </div>
+
+                    <div class="action-form">
+                        <div class="cancel-movie js-cancel-movie">
+                            Trở lại
+                        </div>
+                        <input type="submit"
+                               data-toast-title="Thành công"
+                               data-toast-message="Thêm phim thành công"
+                               data-toast-type="success"
+                               data-toast-duration="3000"
+                               class="submit-movie js-addMovie" onclick="return checkAddMovie()" value="Thêm" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <form id="form-movie-update" class="form-with-toast" action="~/AdminMovie/UpdateMovie" method="post" enctype="multipart/form-data">
+        <div class="modal js-modal-changeMovie">
+            <div class="modal-container js-modal-changeMovie-container">
+                <div class="modal-close js-modal-changeMovie-close">
+                    <i class="ri-close-large-line"></i>
+                </div>
+
+                <header class="modal-header modal-header-movies">
+                    <i class="ri-movie-2-line"></i>
+                    Cập nhật phim
+                </header>
+
+                <div class="modal-content">
+                    <div class="modal-twoCol">
+                        <input name="IDPhim" id="movie-id" type="hidden" class="js-movie-id-change modal-input">
+                        <label for="movie-name" class="modal-label">
+                            Tên phim
+                            <input name="TenPhim" id="movie-name" type="text" class="js-movie-name-change modal-input" placeholder="Tên phim...">
+                            <span class="check-error name-updateMovie-error"></span>
+                        </label>
+
+                        <label for="movie-director" class="modal-label">
+                            Đạo diễn
+                            <input name="DaoDien" id="movie-director" type="text" class="js-movie-director-change modal-input" placeholder="Tên đạo diễn...">
+                            <span class="check-error director-updateMovie-error"></span>
+                        </label>
+
+                        <label for="movie-nation" class="modal-label">
+                            Quốc gia
+                            <select name="IDQG" id="movie-nation" class="modal-input js-movie-nation-change">
+                                @foreach (var nation in ViewBag.Nation)
+                                {
+                                    <option value="@nation.IDQG">@nation.TenQG</option>
+                                }
+                            </select>
+                            <span class="check-error nation-updateMovie-error"></span>
+                        </label>
+
+
+                        <label for="movie-category-change" class="modal-label">
+                            Thể loại
+                            <select name="TheLoaiUpdate[]" id="movie-category-change" class="js-movie-category-change" multiple>
+                                @foreach (var cate in ViewBag.Category)
+                                {
+                                    <option value="@cate.TenTheLoai">@cate.TenTheLoai</option>
+                                }
+                            </select>
+                            <span class="check-error category-updateMovie-error"></span>
+                        </label>
+
+
+                        <label for="movie-year" class="modal-label">
+                            Năm sản xuất
+                            <input name="NamSX" id="movie-year" type="number" class="js-movie-year-change modal-input" placeholder="Năm sản xuất..."
+                                   min="1900">
+                            <span class="check-error year-updateMovie-error"></span>
+                        </label>
+
+
+                        <label for="movie-time" class="modal-label">
+                            Thời lượng
+                            <input name="ThoiLuong" id="movie-time" type="text" class="js-movie-time-change modal-input" placeholder="Thời lượng...">
+                            <span class="check-error time-updateMovie-error"></span>
+                        </label>
+
+                        <label for="movie-quality" class="modal-label">
+                            Chất lượng
+                            <input name="ChatLuong" id="movie-quality" type="text" class="js-movie-quality-change modal-input" placeholder="Chất lượng....">
+                            <span class="check-error quality-updateMovie-error"></span>
+                        </label>
+
+                        <label for="movie-language" class="modal-label">
+                            Ngôn ngữ
+                            <input name="NgonNgu" id="movie-language" type="text" class="js-movie-language-change modal-input" placeholder="Ngôn ngữ...">
+                            <span class="check-error language-updateMovie-error"></span>
+                        </label>
+
+                        <label for="movie-link" class="modal-label">
+                            Link phim
+                            <input name="MovieVideoLinkUpdate" id="movie-link" type="text" class="js-movie-link-change modal-input" placeholder="Link phim...">
+                            <span class="check-error link-updateMovie-error"></span>
+                        </label>
+
+                        <label for="movie-episode" class="modal-label">
+                            Tập
+                            <input name="Tap" id="movie-episode" type="number" class="js-movie-episode-change modal-input" placeholder="Tập..." min="1">
+                            <span class="check-error episode-updateMovie-error"></span>
+                        </label>
+
+                        <label for="movie-set" class="modal-label">
+                            Tên bộ
+                            <select name="IDBo" id="movie-set" class="modal-input js-movie-set-change">
+                                @foreach (var set in ViewBag.Set)
+                                {
+                                    <option value="@set.IDBo">@set.TenBo</option>
+                                }
+                            </select>
+                            <span class="check-error set-updateMovie-error"></span>
+                        </label>
+                        <label for="movie-img" class="modal-label">
+                            Ảnh
+                            <input name="MovieImgUpdate" id="movie-img" type="file" class="js-movie-img-change modal-input" accept="image/*">
+                            <span class="check-error img-updateMovie-error"></span>
+                        </label>
+                    </div>
+
+                    <div class="modal-col">
+                        <label for="movie-video" class="modal-label">
+                            Đăng tải video
+                            <input name="MovieVideoFileUpdate" id="movie-video" type="file" class="js-movie-video-change modal-input" accept="video/*">
+                            <span class="check-error video-updateMovie-error"></span>
+                        </label>
+                        <label for="movie-description" class="modal-label">
+                            Mô tả
+                            <textarea name="MoTa" id="movie-description" rows="2" type="textarea" class="js-movie-description-change modal-input" placeholder="Mô tả..."></textarea>
+                            <span class="check-error description-updateMovie-error"></span>
+                        </label>
+                    </div>
+
+                    <div class="action-form">
+                        <div class="cancel-movie js-cancel-movie-change">
+                            Trở lại
+                        </div>
+                        <input type="submit"
+                               data-toast-title="Thành công"
+                               data-toast-message="Cập nhật thông tin phim thành công"
+                               data-toast-type="success"
+                               data-toast-duration="3000"
+                               class="submit-movie js-btnChangeMovie" onclick="return checkUpdateMovie()" value="Cập nhật" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form class="form-with-toast" action="~/AdminMovie/DeleteMovie" method="post" enctype="multipart/form-data">
+        <div class="modal-delete js-modal-deleteMovie">
+            <div class="modal-delete-container js-modal-deleteMovie-container">
+                <div class="modal-delete-close js-modal-deleteMovie-close">
+                    <i class="ri-close-large-line"></i>
+                </div>
+                <div class="modal-delete-body">
+                    <input name="IDPhim" id="movie-id-delete" type="hidden" class="js-movie-id-delete modal-input">
+                    <p>Bạn có chắc muốn xóa phim?</p>
+                    <div class="btn-delete-choose">
+                        <input type="submit" value="Có"
+                                data-toast-title="Thành công"
+                                data-toast-message="Xóa thông tin phim thành công"
+                                data-toast-type="success"
+                                data-toast-duration="3000"
+                                class="btn-yes js-movie-btn-yes"/>
+                        <div class="btn-no js-movie-btn-no">
+                            <a href="#">Không</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+

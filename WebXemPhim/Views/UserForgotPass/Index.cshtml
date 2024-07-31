@@ -1,0 +1,69 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="~/CSS/styleUser.css">
+</head>
+
+<body>
+    <div class="forgot-container">
+        <div class="form-content">
+            <a href="~/UserHome/Index" class="logo">
+                <img src="~/Image_User/logo.png" alt="">
+            </a>
+            <h2 class="title">Khôi Phục Mật Khẩu</h2>
+            <div class="form-group step-1 show">
+                <div class="input-group">
+                    <p>Nhập email để khôi phục</p>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <span>Tên người dùng không được để trống</span>
+                </div>
+            </div>
+            <div class="form-group step-2">
+                <div class="input-group">
+                    <p>Nhập mã khôi mục</p>
+                    <input type="text" name="code" placeholder="Mã khôi phục gồm 4 số" maxlength="4" required>
+                    <span>Tên người dùng không được để trống</span>
+                </div>
+            </div>
+            <div class="form-group step-3">
+                <div class="input-group">
+                    <p>Mật khẩu mới</p>
+                    <input type="password" name="newpass" placeholder="Mật khẩu mới" required>
+                    <span>Tên người dùng không được để trống</span>
+                </div>
+                <div class="input-group">
+                    <p>Xác nhận mật khẩu</p>
+                    <input type="password" name="cofirmpass" placeholder="Xác nhận mật khẩu" required>
+                    <span>Tên người dùng không được để trống</span>
+                </div>
+            </div>
+            <button class="btn btn-primary" data-step="1">Gửi mã</button>
+            <p>Quay trở lại? <a href="~/UserSignin/Index">Đăng nhập ngay</a> </p>
+        </div>
+    </div>
+
+    <div id="toast">
+        <div id="img">
+        </div>
+        <div id="desc">
+        </div>
+    </div>
+    <script src="@Html.Raw("https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js")"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/JS/user-script-forgot.js"></script>
+</body>
+
+</html>

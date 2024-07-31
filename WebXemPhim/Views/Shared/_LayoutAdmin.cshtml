@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <link href="~/CSS/stylesAdmin.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/CSS/multi-select-tag.css" type="text/css">
+    @RenderSection("LinkChart", required: false)
+</head>
+<body>
+    <div class="page">
+        <nav class="sidebar">
+            <a href="@Url.Action("Index", "UserHome")" style="display: flex; justify-content: center; margin-top: 10px; margin-bottom: 50px;">
+                <img src="~/Image_User/logo.png" style="width: 150px" alt="" />
+            </a>
+            <ul class="list-sidebar">
+                <li class="item-sidebar @((ViewContext.RouteData.Values["Controller"].ToString() == "AdminDashboard" ? "active" : ""))">
+                    <a href="@Url.Action("Index", "AdminDashboard")">
+                        <i class="ri-dashboard-line icon-sidebar"></i> Trang chủ
+                    </a>
+                </li>
+                <li class="item-sidebar @((ViewContext.RouteData.Values["Controller"].ToString() == "AdminMovie" ? "active" : ""))">
+                    <a href="@Url.Action("Index", "AdminMovie")">
+                        <i class="ri-movie-2-line icon-sidebar"></i> Quản lý phim
+                    </a>
+                </li>
+                <li class="item-sidebar @((ViewContext.RouteData.Values["Controller"].ToString() == "AdminUser" ? "active" : ""))">
+                    <a href="@Url.Action("Index", "AdminUser")">
+                        <i class="ri-user-line icon-sidebar"></i> Quản lý người dùng
+                    </a>
+                </li>
+                <li class="item-sidebar @((ViewContext.RouteData.Values["Controller"].ToString() == "AdminCategory" ? "active" : ""))">
+                    <a href="@Url.Action("Index", "AdminCategory")">
+                        <i class="ri-list-check icon-sidebar"></i> Quản lý thể loại
+                    </a>
+                </li>
+                <li class="item-sidebar @((ViewContext.RouteData.Values["Controller"].ToString() == "AdminNation" ? "active" : ""))">
+                    <a href="@Url.Action("Index", "AdminNation")">
+                        <i class="ri-earth-line icon-sidebar"></i> Quản lý quốc gia
+                    </a>
+                </li>
+                <li class="item-sidebar @((ViewContext.RouteData.Values["Controller"].ToString() == "AdminSet" ? "active" : ""))">
+                    <a href="@Url.Action("Index", "AdminSet")">
+                        <i class="ri-movie-line icon-sidebar"></i> Quản lý bộ phim
+                    </a>
+                </li>
+                <li class="item-sidebar">
+                    <a href="~/UserSignin/LogoutAccount">
+                        <i class="ri-logout-box-line icon-sidebar"></i> Đăng xuất
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="body-container">
+            <header class="title-container">
+                <h1>@ViewBag.TitlePage</h1>
+                <img src="~/Image_Admin/user.png" alt="avatar" />
+            </header>
+            <div class="content-container">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+    <div id="toast"></div>
+    <script>
+        function showSuccessToast(title, message, type) {
+            toast({
+                title: title,
+                message: message,
+                type: type,
+                duration: 5000
+            });
+        }
+    </script>
+    <script src="~/JS/script-toast.js"></script>
+    @RenderSection("ScriptMulti", required: false)
+    @RenderSection("ScriptChart", required: false)
+    @RenderSection("ScriptCategory", required: false)
+    @RenderSection("ScriptMovie", required: false)
+    @RenderSection("ScriptNation", required: false)
+    @RenderSection("ScriptSet", required: false)
+    @RenderSection("ScriptUser", required: false)
+    @RenderSection("ScriptNewMulti", required: false)
+</body>
+</html>

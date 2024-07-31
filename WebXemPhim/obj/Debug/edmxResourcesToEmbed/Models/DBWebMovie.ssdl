@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="PhimDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="BinhLuan">
+    <Key>
+      <PropertyRef Name="IDBL" />
+    </Key>
+    <Property Name="IDBL" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IDPhim" Type="int" Nullable="false" />
+    <Property Name="IDND" Type="int" Nullable="false" />
+    <Property Name="NDBL" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="Bo">
+    <Key>
+      <PropertyRef Name="IDBo" />
+    </Key>
+    <Property Name="IDBo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TenBo" Type="nvarchar" MaxLength="200" />
+    <Property Name="SoTap" Type="int" />
+  </EntityType>
+  <EntityType Name="NguoiDung">
+    <Key>
+      <PropertyRef Name="IDND" />
+    </Key>
+    <Property Name="IDND" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TenND" Type="nvarchar" MaxLength="200" />
+    <Property Name="NgaySinh" Type="datetime" />
+    <Property Name="Email" Type="nvarchar" MaxLength="200" />
+    <Property Name="TaiKhoan" Type="nvarchar" MaxLength="200" />
+    <Property Name="MatKhau" Type="nvarchar(max)" />
+    <Property Name="VaiTro" Type="varchar" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="Phim">
+    <Key>
+      <PropertyRef Name="IDPhim" />
+    </Key>
+    <Property Name="IDPhim" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TenPhim" Type="nvarchar" MaxLength="200" />
+    <Property Name="DaoDien" Type="nvarchar" MaxLength="200" />
+    <Property Name="IDQG" Type="int" Nullable="false" />
+    <Property Name="NamSX" Type="int" />
+    <Property Name="ThoiLuong" Type="nvarchar" MaxLength="200" />
+    <Property Name="ChatLuong" Type="nvarchar" MaxLength="200" />
+    <Property Name="NgonNgu" Type="nvarchar" MaxLength="200" />
+    <Property Name="TheLoai" Type="nvarchar" MaxLength="200" />
+    <Property Name="LuotXem" Type="int" />
+    <Property Name="MoTa" Type="nvarchar(max)" />
+    <Property Name="LinkPhim" Type="nvarchar(max)" />
+    <Property Name="LinkAnh" Type="nvarchar(max)" />
+    <Property Name="Tap" Type="int" />
+    <Property Name="IDBo" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="QuocGia">
+    <Key>
+      <PropertyRef Name="IDQG" />
+    </Key>
+    <Property Name="IDQG" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TenQG" Type="nvarchar" MaxLength="200" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="TheLoai">
+    <Key>
+      <PropertyRef Name="IDTheLoai" />
+    </Key>
+    <Property Name="IDTheLoai" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TenTheLoai" Type="nvarchar" MaxLength="200" />
+  </EntityType>
+  <Association Name="fk_bl_nd">
+    <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="BinhLuan" Type="Self.BinhLuan" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NguoiDung">
+        <PropertyRef Name="IDND" />
+      </Principal>
+      <Dependent Role="BinhLuan">
+        <PropertyRef Name="IDND" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_bl_phim">
+    <End Role="Phim" Type="Self.Phim" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="BinhLuan" Type="Self.BinhLuan" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Phim">
+        <PropertyRef Name="IDPhim" />
+      </Principal>
+      <Dependent Role="BinhLuan">
+        <PropertyRef Name="IDPhim" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_phim_bo">
+    <End Role="Bo" Type="Self.Bo" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Phim" Type="Self.Phim" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Bo">
+        <PropertyRef Name="IDBo" />
+      </Principal>
+      <Dependent Role="Phim">
+        <PropertyRef Name="IDBo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_phim_qg">
+    <End Role="QuocGia" Type="Self.QuocGia" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Phim" Type="Self.Phim" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="QuocGia">
+        <PropertyRef Name="IDQG" />
+      </Principal>
+      <Dependent Role="Phim">
+        <PropertyRef Name="IDQG" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="PhimDBModelStoreContainer">
+    <EntitySet Name="BinhLuan" EntityType="Self.BinhLuan" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Bo" EntityType="Self.Bo" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="NguoiDung" EntityType="Self.NguoiDung" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Phim" EntityType="Self.Phim" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="QuocGia" EntityType="Self.QuocGia" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TheLoai" EntityType="Self.TheLoai" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="fk_bl_nd" Association="Self.fk_bl_nd">
+      <End Role="NguoiDung" EntitySet="NguoiDung" />
+      <End Role="BinhLuan" EntitySet="BinhLuan" />
+    </AssociationSet>
+    <AssociationSet Name="fk_bl_phim" Association="Self.fk_bl_phim">
+      <End Role="Phim" EntitySet="Phim" />
+      <End Role="BinhLuan" EntitySet="BinhLuan" />
+    </AssociationSet>
+    <AssociationSet Name="fk_phim_bo" Association="Self.fk_phim_bo">
+      <End Role="Bo" EntitySet="Bo" />
+      <End Role="Phim" EntitySet="Phim" />
+    </AssociationSet>
+    <AssociationSet Name="fk_phim_qg" Association="Self.fk_phim_qg">
+      <End Role="QuocGia" EntitySet="QuocGia" />
+      <End Role="Phim" EntitySet="Phim" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

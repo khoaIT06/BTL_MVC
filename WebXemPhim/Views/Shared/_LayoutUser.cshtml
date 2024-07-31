@@ -1,0 +1,113 @@
+﻿@model List<WebXemPhim.Models.TheLoai>
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="~/CSS/styleUser.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container ">
+            <a href="~/UserHome/Index" class="header-logo">
+                <img src="~/Image_User/logo.png" alt="">
+            </a>
+            <ul class="header-list">
+                <li><a href="~/UserHome/Index">Trang chủ</a></li>
+                @for (int i = 0; i < 5; i++)
+                {
+                    <li><a href="~/UserSearch/SearchTheLoai/@Model[i].IDTheLoai">@Model[i].TenTheLoai</a></li>
+                }
+                <li class="list-more">
+                    <div>
+                        Xem thêm
+                        <i class="ri-arrow-down-s-fill"></i>
+                    </div>
+                    <ul class="header-sublist">
+                        @for (int i = 5; i < Model.Count; i++)
+                        {
+                            <li><a href="~/UserSearch/SearchTheLoai/@Model[i].IDTheLoai">@Model[i].TenTheLoai</a></li>
+                        }
+                    </ul>
+                </li>
+            </ul>
+
+            <div class="header-actions">
+                <a href="~/UserSearch/Index" class="header-search">
+                    <i class="ri-search-line"></i>
+                </a>
+                <div class="header-account @(Session["UserID"] != null ? "" : "show")">
+                    <a class="btn btn-normal" href="~/UserSignup/Index">Đăng kí</a>
+                    <a class="btn btn-primary" href="~/UserSignin/Index">Đăng nhập</a>
+                </div>
+                <div class="header-avatar @(Session["UserID"] != null ? "show" : "")">
+                    <img src="~/Image_User/avatar.png" alt="">
+                    <div class="avatar-action">
+                        <a href="~/UserInfo/Index">Thông tin cá nhân</a>
+                        @{
+                            if (Session["VaiTro"] != null && Session["VaiTro"].ToString() == "Admin")
+                            {
+                                <a href="~/AdminDashboard/Index">Trang quản lý</a>
+                            }
+                        }
+                        <a href="~/UserSignin/LogoutAccount">
+                            Thoát
+                            <i class="ri-logout-box-r-line"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </header>
+
+
+    @RenderBody()
+
+
+    <div id="toast">
+        <div id="img">
+        </div>
+        <div id="desc">
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container container">
+            <div class="footer-logo">
+                <img src="~/Image_User/logo.png" alt="">
+            </div>
+            <div class="footer-about">
+                <p>Về chúng tôi</p>
+                <p>Giới thiệu</p>
+                <p>Dịch vụ</p>
+                <p>Hỗ trợ</p>
+            </div>
+            <div class="footer-contact">
+                <div>
+                    <i class="ri-phone-line"></i>
+                    <p>19000000</p>
+                </div>
+                <div>
+                    <i class="ri-mail-line"></i>
+                    <p>email.example@gmail.com</p>
+                </div>
+                <div>Theo dõi chúng tôi trên:</div>
+                <div>
+                    <i class="ri-facebook-circle-fill"></i>
+                    <i class="ri-youtube-fill"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    @RenderSection("Script", required: false)
+</body>
+</html>

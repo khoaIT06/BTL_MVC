@@ -1,0 +1,215 @@
+﻿
+@{
+    ViewBag.TitlePage = "Quản lý quốc gia";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@model List<WebXemPhim.Models.QuocGia>
+
+@section ScriptNation{
+    <script src="~/JS/script-form-nation.js"></script>
+    <script src="~/JS/script-check-nation.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(document).ready(function () {
+        $('.nation-text-search').on('input', function () {
+            var searchTerm = $(this).val();
+
+            $.ajax({
+                url: '@Url.Action("SearchNations", "AdminNation")',
+                type: 'GET',
+                data: { searchTerm: searchTerm },
+                success: function (data) {
+                    var tbody = $('tbody');
+                    tbody.empty();
+
+                    $.each(data, function (index, nation) {
+                        tbody.append(
+                            '<tr>' +
+                            '<td class="categoty-id">' + nation.IDQG + '</td>' +
+                            '<td class="nation-name">' + nation.TenQG + '</td>' +
+                            '<td class="user-action">' +
+                                '<div class="btn-changeNation"><i class="ri-pencil-fill icon-change js-changeNation"></i></div>' +
+                                '<div class="btn-deleteNation"><i class="ri-delete-bin-line icon-delete js-deleteNation"></i></div>' +
+                            '</td>' +
+                            '</tr>'
+                        );
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
+    </script>
+}
+
+<div class="wrapper-content">
+    <div class="table-header">
+        <h3 class="main-title">
+            Thông tin quốc gia
+        </h3>
+        <div class="movie-search">
+            <input type="text" class="nation-text-search text-search" placeholder="Tìm kiếm...">
+            <i class="ri-search-line icon-search"></i>
+        </div>
+        <div class="add-movie js-add-nation"><i class="ri-add-large-line icon-add"></i>Thêm quốc gia</div>
+    </div>
+</div>
+<div class="wrapper-content wrapper-content-body">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên quốc gia</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="nation-id">@item.IDQG</td>
+                    <td class="nation-name">@item.TenQG</td>
+                    <td class="user-action">
+                        <div class="btn-changeNation">
+                            <i class="ri-pencil-fill icon-change js-changeNation"></i>
+                        </div>
+                        <div class="btn-deleteNation">
+                            <i class="ri-delete-bin-line icon-delete js-deleteNation"></i>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @{
+        var page = Request.QueryString["page"];
+        int currentPage = 1;
+        if (!string.IsNullOrEmpty(page))
+        {
+            int.TryParse(page, out currentPage);
+        }
+    }
+    <div class="pagination">
+        @{
+            int PrevPage = ViewBag.Page - 1;
+            if (PrevPage <= 0)
+            {
+                PrevPage = 1;
+            }
+            int NextPage = ViewBag.Page + 1;
+            if (NextPage > ViewBag.NoOfPages)
+            {
+                NextPage = ViewBag.NoOfPages;
+            }
+        }
+        <a href="/AdminNation/Index?page=@PrevPage" class="prev">Trước</a>
+        @for (int i = 0; i < ViewBag.NoOfPages; i++)
+        {
+            var pageIndex = i + 1;
+            <a href="/AdminNation/Index?page=@pageIndex" class="@(pageIndex == currentPage ? "page-current" : "")">@pageIndex</a>
+        }
+        <a href="/AdminNation/Index?page=@NextPage" class="next">Sau</a>
+    </div>
+</div>
+
+<form class="form-with-toast" action="~/AdminNation/AddNation" method="post" enctype="multipart/form-data">
+    <div class="modal js-modal-addNation">
+        <div class="modal-container modal-container-passwordAdmin js-modal-addNation-container modal-small">
+            <div class="modal-close js-modal-addNation-close">
+                <i class="ri-close-large-line"></i>
+            </div>
+
+            <header class="modal-header modal-header-movies">
+                <i class="ri-earth-line"></i>
+                Thêm quốc gia
+            </header>
+
+            <div class="modal-content">
+                <div class="modal-col">
+                    <label for="nation-name" class="modal-label">
+                        Tên quốc gia
+                        <input name="TenQG" id="nation-name" type="text" class="js-nation-name modal-input" placeholder="Tên quốc gia...">
+                        <span class="check-error name-addNation-error"></span>
+                    </label>
+                </div>
+                <div class="action-form">
+                    <div class="cancel-movie js-cancel-nation">
+                        Trở lại
+                    </div>
+                    <input type="submit" class="submit-movie js-addNation" value="Thêm"
+                           data-toast-title="Thành công"
+                           data-toast-message="Thêm quốc gia thành công"
+                           data-toast-type="success"
+                           data-toast-duration="3000"
+                           onclick="return checkAddNation()">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form class="form-with-toast" action="~/AdminNation/UpdateNation" method="post" enctype="multipart/form-data">
+    <div class="modal js-modal-changeNation">
+        <div class="modal-container modal-container-passwordAdmin js-modal-changeNation-container modal-small">
+            <div class="modal-close js-modal-changeNation-close">
+                <i class="ri-close-large-line"></i>
+            </div>
+
+            <header class="modal-header modal-header-movies">
+                <i class="ri-earth-line"></i>
+                Cập nhật quốc gia
+            </header>
+
+            <div class="modal-content">
+                <div class="modal-col">
+                    <input name="IDQG" type="hidden" class="js-nation-id-change modal-input">
+                    <label for="nation-name-change" class="modal-label">
+                        Tên quốc gia
+                        <input name="TenQG" id="nation-name-change" type="text" class="js-nation-name-change modal-input" placeholder="Tên quốc gia...">
+                        <span class="check-error name-changeNation-error"></span>
+                    </label>
+                </div>
+                <div class="action-form">
+                    <div class="cancel-movie js-cancel-nation-change">
+                        Trở lại
+                    </div>
+                    <input type="submit"
+                           data-toast-title="Thành công"
+                           data-toast-message="Cập nhật quốc gia thành công"
+                           data-toast-type="success"
+                           data-toast-duration="3000"
+                           class="submit-movie js-btnChangeNation" onclick="return checkUpdateNation()" value="Cập nhật" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form class="form-with-toast" action="~/AdminNation/DeleteNation" method="post" enctype="multipart/form-data">
+    <div class="modal-delete js-modal-deleteNation">
+        <div class="modal-delete-container js-modal-deleteNation-container">
+            <div class="modal-delete-close js-modal-deleteNation-close">
+                <i class="ri-close-large-line"></i>
+            </div>
+            <div class="modal-delete-body">
+                <input name="IDQG" type="hidden" class="js-nation-id-delete modal-input">
+                <p>Bạn có chắc muốn xóa quốc gia này?</p>
+                <div class="btn-delete-choose">
+                    <input type="submit" value="Có"
+                           data-toast-title="Thành công"
+                           data-toast-message="Xóa thông tin quốc gia thành công"
+                           data-toast-type="success"
+                           data-toast-duration="3000"
+                           class="btn-yes js-nation-btn-yes" />
+                    <div class="btn-no js-nation-btn-no">
+                        <a href="#">Không</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+

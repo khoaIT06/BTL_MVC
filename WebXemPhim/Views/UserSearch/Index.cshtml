@@ -1,0 +1,54 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+    var listBoPhim = ViewBag.ListBoPhim as List<WebXemPhim.Models.Phim>;
+
+}
+
+@section Script {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/JS/user-script-search.js"></script>
+}
+
+<section class="search-container container">
+    <div class="search-content">
+        <h2 class="title">Tìm kiếm phim</h2>
+        <div class="search-input">
+            <i class="ri-search-line"></i>
+            <input type="text" placeholder="Nhập tên phim, thể loại" value="@ViewBag.TextSearch">
+            <button class="btn btn-primary">Tìm kiếm</button>
+        </div>
+    </div>
+    <div class="search-list">
+        <h2 class="title">Kết quả tìm kiếm</h2>
+        <h2 class="not-found @(listBoPhim.Count > 0 ? "": "show") ">Không tìm thấy kết quả nào phù hợp</h2>
+        <div class="film-list">
+            @{
+                if (listBoPhim != null)
+                {
+                    var listPhimGroup = listBoPhim.OrderBy(x => x.Tap).GroupBy(x => x.IDBo).ToList();
+                    foreach (var BoPhim in listPhimGroup)
+                    {
+                        foreach (var Phim in BoPhim)
+                        {
+                            <div class="film-item swiper-slide">
+                                <a href="~/UserWatch/Index/@Phim.IDPhim" class="film-post">
+                                    <div class="film-image">
+                                        <img src="@Phim.LinkAnh" alt="">
+                                    </div>
+                                    <div class="film-watch">
+                                        <i class="ri-play-fill"></i>
+                                    </div>
+                                </a>
+                                <h2 class="film-name">@Phim.Bo.TenBo</h2>
+                            </div>
+                            break;
+                        }
+                    }
+                }
+            }
+        </div>
+    </div>
+</section>
+

@@ -1,0 +1,83 @@
+﻿
+@{
+    ViewBag.TitlePage = "Trang chủ";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@section ScriptChart{
+    <script src="~/JS/script-chart.js"></script>
+}
+
+@section LinkChart{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+}
+
+<div class="wrapper-content">
+    <h3 class="main-title">
+        Dữ liệu
+    </h3>
+    <div class="card-wrapper">
+        <div class="payment-card light-red">
+            <div class="card-header">
+                <div class="amount">
+                    <span class="title">
+                        Lượt xem
+                    </span>
+                    <span class="amount-value">
+                        @ViewBag.TotalViews
+                    </span>
+                </div>
+                <i class="ri-eye-line icon dark-red"></i></i>
+            </div>
+        </div>
+        <div class="payment-card light-purple">
+            <div class="card-header">
+                <div class="amount">
+                    <span class="title">
+                        Tổng số phim
+                    </span>
+                    <span class="amount-value">
+                        @ViewBag.TotalMovie
+                    </span>
+                </div>
+                <i class="ri-film-line icon dark-purple"></i>
+            </div>
+        </div>
+        <div class="payment-card light-green">
+            <div class="card-header">
+                <div class="amount">
+                    <span class="title">
+                        Tổng số người dùng
+                    </span>
+                    <span class="amount-value">
+                        @ViewBag.TotalUser
+                    </span>
+                </div>
+                <i class="ri-group-line icon dark-green"></i>
+            </div>
+        </div>
+        <div class="payment-card light-blue">
+            <div class="card-header">
+                <div class="amount">
+                    <span class="title">
+                        Tổng loại phim
+                    </span>
+                    <span class="amount-value">
+                        @ViewBag.TotalCategory
+                    </span>
+                </div>
+                <i class="ri-file-list-3-line icon dark-blue"></i>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="wrapper-content">
+    <h3 class="main-title">
+        Biểu đồ thống kê
+    </h3>
+    <div class="wrapper-chart">
+        <canvas id="barChart-CategoryMovie" data-category-names='@Html.Raw(ViewBag.CategoryNames)' data-total-movies='@Html.Raw(ViewBag.TotalMoviesByCategory)'></canvas>
+        <canvas id="lineChart-view" data-category-names='@Html.Raw(ViewBag.CategoryNames)' data-total-views='@Html.Raw(ViewBag.TotalViewsByCategory)'></canvas>
+    </div>
+</div>

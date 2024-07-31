@@ -1,0 +1,138 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+    var listPhim = ViewBag.ListPhim as List<WebXemPhim.Models.Phim>;
+    var listPhimTT = ViewBag.ListPhimTT as List<WebXemPhim.Models.Phim>;
+    var PhimWatch = ViewBag.Phim as WebXemPhim.Models.Phim;
+    var BinhLuan = ViewBag.BinhLuan as List<WebXemPhim.Models.BinhLuan>;
+}
+
+@section Script {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/JS/user-script-watch.js"></script>
+}
+
+<section class="watch-container container">
+    <div class="watch-video">
+        <iframe src="@PhimWatch.LinkPhim"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+    <div class="watch-detail">
+
+        <h2 class="watch-name">
+            @PhimWatch.TenPhim
+        </h2>
+        <p class="title">Giới thiệu chung</p>
+        <p class="watch-desc">
+            @PhimWatch.MoTa
+        </p>
+        <div class="watch-subdetail">
+            <p>Năm: @PhimWatch.NamSX</p>
+            <p>-</p>
+            <p>@PhimWatch.NgonNgu</p>
+            <p>-</p>
+            <p>@PhimWatch.ChatLuong</p>
+            <p>-</p>
+            <p>Lượt xem: @PhimWatch.LuotXem</p>
+        </div>
+        <div class="watch-group">
+            <p>Đạo diễn: </p>
+            <p>@PhimWatch.DaoDien</p>
+            <p>Thể loại: </p>
+            <p>@PhimWatch.TheLoai</p>
+        </div>
+    </div>
+    <div class="watch-list">
+        <h2 class="title">Tổng hợp tập phim</h2>
+        <ul>
+            @{
+                for (int i = 0; i < listPhim.Count; i++)
+                {
+                    <li>
+                        <a href="~/UserWatch/Index/@listPhim[i].IDPhim">Tập @(i + 1)</a>
+                    </li>
+                }
+            }
+
+        </ul>
+    </div>
+    <div class="watch-relate">
+        <h2 class="title">Phim tương tự</h2>
+        <div class="film-list">
+            @{
+                var listPhimGroup = listPhimTT.OrderBy(x => x.Tap).GroupBy(x => x.IDBo).ToList();
+                var index = 0;
+                foreach (var BoPhim in listPhimGroup)
+                {
+                    index++;
+                    if (index > 4)
+                    {
+                        break;
+                    }
+                    foreach (var Phim in BoPhim)
+                    {
+                        <div class="film-item">
+                            <a href="~/UserWatch/Index/@Phim.IDPhim" class="film-post">
+                                <div class="film-image">
+                                    <img src="@Phim.LinkAnh" alt="">
+                                </div>
+                                <div class="film-watch">
+                                    <i class="ri-play-fill"></i>
+                                </div>
+                            </a>
+                            <h2 class="film-name">@Phim.Bo.TenBo</h2>
+                        </div>
+                        break;
+                    }
+                }
+            }
+
+        </div>
+    </div>
+    <div class="watch-comment">
+        <h2 class="title">Bình luận</h2>
+        <div class="comment-actions">
+            <p class="toast @(Session["UserID"] != null ? "" : "show")">
+                Vui lòng <a href="~/UserSignin/Index">Đăng nhập</a> tài khoản để sử dụng Bình luận
+            </p>
+            <div class="comment-input @(Session["UserID"] != null ? "show" : "")">
+                <div class="avatar">
+                    <img src="~/Image_User/avatar.png" alt="">
+                </div>
+                <input type="text" placeholder="Nhập bình luận tại đây !!!" data-phim="@PhimWatch.IDPhim">
+                <button class="btn btn-primary">Đăng tải</button>
+            </div>
+        </div>
+        <div class="comment-list">
+
+            @foreach (var item in BinhLuan)
+            {
+                <div class="comment-item">
+                    <div class="main">
+                        <div class="avatar">
+                            <img src="~/Image_User/avatar.png" alt="">
+                        </div>
+                        <div>
+                            <p>@item.NguoiDung.TenND</p>
+                            <input type="text" value="@item.NDBL" readonly>
+                        </div>
+                    </div>
+                    @if (Session["UserID"] != null)
+                    {
+                        <div class="actions  @(int.Parse(Session["UserID"].ToString()) == item.IDND ? "show" : Session["VaiTro"].ToString() == "Admin" ? "show": "")">
+                            <button class="comment-edit @(Session["VaiTro"].ToString() == "Admin" ? "": "show")">Chỉnh sửa</button>
+                            <button class="comment-delete show" data-cmt="@item.IDBL">Xóa</button>
+                            <button class="comment-save" data-phim="@item.IDPhim"  data-cmt="@item.IDBL">Lưu</button>
+                            <button class="comment-noaction">Thoát</button>
+                        </div>
+                    }
+
+                </div>
+            }
+
+        </div>
+    </div>
+</section>
+

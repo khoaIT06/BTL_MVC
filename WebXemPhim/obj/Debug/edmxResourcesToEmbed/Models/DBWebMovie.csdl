@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="PhimDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="BinhLuan">
+    <Key>
+      <PropertyRef Name="IDBL" />
+    </Key>
+    <Property Name="IDBL" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="IDPhim" Type="Int32" Nullable="false" />
+    <Property Name="IDND" Type="Int32" Nullable="false" />
+    <Property Name="NDBL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="NguoiDung" Relationship="Self.fk_bl_nd" FromRole="BinhLuan" ToRole="NguoiDung" />
+    <NavigationProperty Name="Phim" Relationship="Self.fk_bl_phim" FromRole="BinhLuan" ToRole="Phim" />
+  </EntityType>
+  <EntityType Name="Bo">
+    <Key>
+      <PropertyRef Name="IDBo" />
+    </Key>
+    <Property Name="IDBo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TenBo" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="SoTap" Type="Int32" />
+    <NavigationProperty Name="Phims" Relationship="Self.fk_phim_bo" FromRole="Bo" ToRole="Phim" />
+  </EntityType>
+  <EntityType Name="NguoiDung">
+    <Key>
+      <PropertyRef Name="IDND" />
+    </Key>
+    <Property Name="IDND" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TenND" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="NgaySinh" Type="DateTime" Precision="3" />
+    <Property Name="Email" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="TaiKhoan" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="MatKhau" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="VaiTro" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="BinhLuans" Relationship="Self.fk_bl_nd" FromRole="NguoiDung" ToRole="BinhLuan" />
+  </EntityType>
+  <EntityType Name="Phim">
+    <Key>
+      <PropertyRef Name="IDPhim" />
+    </Key>
+    <Property Name="IDPhim" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TenPhim" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="DaoDien" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="IDQG" Type="Int32" Nullable="false" />
+    <Property Name="NamSX" Type="Int32" />
+    <Property Name="ThoiLuong" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="ChatLuong" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="NgonNgu" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="TheLoai" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="LuotXem" Type="Int32" />
+    <Property Name="MoTa" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="LinkPhim" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="LinkAnh" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Tap" Type="Int32" />
+    <Property Name="IDBo" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="BinhLuans" Relationship="Self.fk_bl_phim" FromRole="Phim" ToRole="BinhLuan" />
+    <NavigationProperty Name="Bo" Relationship="Self.fk_phim_bo" FromRole="Phim" ToRole="Bo" />
+    <NavigationProperty Name="QuocGia" Relationship="Self.fk_phim_qg" FromRole="Phim" ToRole="QuocGia" />
+  </EntityType>
+  <EntityType Name="QuocGia">
+    <Key>
+      <PropertyRef Name="IDQG" />
+    </Key>
+    <Property Name="IDQG" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TenQG" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Phims" Relationship="Self.fk_phim_qg" FromRole="QuocGia" ToRole="Phim" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="TheLoai">
+    <Key>
+      <PropertyRef Name="IDTheLoai" />
+    </Key>
+    <Property Name="IDTheLoai" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TenTheLoai" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <Association Name="fk_bl_nd">
+    <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="BinhLuan" Type="Self.BinhLuan" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NguoiDung">
+        <PropertyRef Name="IDND" />
+      </Principal>
+      <Dependent Role="BinhLuan">
+        <PropertyRef Name="IDND" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_bl_phim">
+    <End Role="Phim" Type="Self.Phim" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="BinhLuan" Type="Self.BinhLuan" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Phim">
+        <PropertyRef Name="IDPhim" />
+      </Principal>
+      <Dependent Role="BinhLuan">
+        <PropertyRef Name="IDPhim" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_phim_bo">
+    <End Role="Bo" Type="Self.Bo" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Phim" Type="Self.Phim" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Bo">
+        <PropertyRef Name="IDBo" />
+      </Principal>
+      <Dependent Role="Phim">
+        <PropertyRef Name="IDBo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_phim_qg">
+    <End Role="QuocGia" Type="Self.QuocGia" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Phim" Type="Self.Phim" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="QuocGia">
+        <PropertyRef Name="IDQG" />
+      </Principal>
+      <Dependent Role="Phim">
+        <PropertyRef Name="IDQG" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="PhimDBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="BinhLuans" EntityType="Self.BinhLuan" />
+    <EntitySet Name="Boes" EntityType="Self.Bo" />
+    <EntitySet Name="NguoiDungs" EntityType="Self.NguoiDung" />
+    <EntitySet Name="Phims" EntityType="Self.Phim" />
+    <EntitySet Name="QuocGias" EntityType="Self.QuocGia" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="TheLoais" EntityType="Self.TheLoai" />
+    <AssociationSet Name="fk_bl_nd" Association="Self.fk_bl_nd">
+      <End Role="NguoiDung" EntitySet="NguoiDungs" />
+      <End Role="BinhLuan" EntitySet="BinhLuans" />
+    </AssociationSet>
+    <AssociationSet Name="fk_bl_phim" Association="Self.fk_bl_phim">
+      <End Role="Phim" EntitySet="Phims" />
+      <End Role="BinhLuan" EntitySet="BinhLuans" />
+    </AssociationSet>
+    <AssociationSet Name="fk_phim_bo" Association="Self.fk_phim_bo">
+      <End Role="Bo" EntitySet="Boes" />
+      <End Role="Phim" EntitySet="Phims" />
+    </AssociationSet>
+    <AssociationSet Name="fk_phim_qg" Association="Self.fk_phim_qg">
+      <End Role="QuocGia" EntitySet="QuocGias" />
+      <End Role="Phim" EntitySet="Phims" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

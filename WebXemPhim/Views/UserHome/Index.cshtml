@@ -1,0 +1,230 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+    var listPhim = ViewBag.Phim as List<WebXemPhim.Models.Phim>;
+    var listQuocGia = ViewBag.QuocGia as List<WebXemPhim.Models.QuocGia>;
+    var listBoPhimMoi = listPhim.OrderByDescending(x => x.NamSX).OrderBy(x => x.Tap).GroupBy(x => x.IDBo).ToList();
+    var listBoPhimhay = listPhim.OrderByDescending(x => x.LuotXem).OrderBy(x => x.Tap).GroupBy(x => x.IDBo).ToList();
+    var listBoPhimTC = listPhim.Where(x => x.TheLoai.Contains("Tình cảm")).OrderBy(x => x.Tap).GroupBy(x => x.IDBo).ToList();
+    var listBoPhimVN = listPhim.Where(x => x.QuocGia.TenQG == "Việt Nam").OrderBy(x => x.Tap).GroupBy(x => x.IDBo).ToList();
+
+}
+
+@section Script {
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="~/JS/user-script-home.js"></script>
+}
+
+
+<section class="home-container container">
+    <div class="intro-slider swiper mySwiper">
+        <div class="swiper-wrapper">
+            @{
+                
+                var index = 0;
+                foreach (var BoPhim in listBoPhimMoi)
+                {
+                    index++;
+                    if (index > 4)
+                    {
+                        break;
+                    }
+                    foreach (var Phim in BoPhim)
+                    {
+                        <div class="intro-item swiper-slide" style="background-image: url(@Phim.LinkAnh);">
+                            <div class="overlay"></div>
+                            <div class="item-content">
+                                <h2 class="item-name">@Phim.TenPhim</h2>
+                                <div class="item-desc">
+                                    <p class="item-year">@Phim.NamSX</p>
+                                    <p>-</p>
+                                    <p class="item-country">@Phim.QuocGia.TenQG</p>
+                                </div>
+                                <a href="~/UserWatch/Index/@Phim.IDPhim" class="btn btn-primary action-watch">
+                                    <i class="ri-play-fill"></i>
+                                    <p>Xem ngay</p>
+                                </a>
+
+                            </div>
+                        </div>
+                        break;
+                    }
+                }
+            }
+
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-pagination"></div>
+    </div>
+
+    <div class="new-film main-content swiper mySwiper">
+        <div class="content-header">
+            <h2>Mới ra mắt</h2>
+            <a href="~/UserSearch/Index">Xem tất cả</a>
+        </div>
+        <div class="film-list swiper-wrapper">
+            @{
+                index = 0;
+                foreach (var BoPhim in listBoPhimMoi)
+                {
+                    index++;
+                    if (index > 6)
+                    {
+                        break;
+                    }
+                    foreach (var Phim in BoPhim)
+                    {
+                        <div class="film-item swiper-slide">
+                            <a href="~/UserWatch/Index/@Phim.IDPhim" class="film-post">
+                                <div class="film-image">
+                                    <img src="@Phim.LinkAnh" alt="">
+                                </div>
+                                <div class="film-new">
+                                    <img src="~/Image_User/new-img.png" alt="">
+                                </div>
+                                <div class="film-watch">
+                                    <i class="ri-play-fill"></i>
+                                </div>
+                            </a>
+                            <h2 class="film-name">@Phim.Bo.TenBo</h2>
+                        </div>
+                        break;
+                    }
+                }
+            }
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+
+    <div class="hot-film main-content swiper mySwiper">
+        <div class="content-header">
+            <h2>Phim hay</h2>
+            <a href="~/UserSearch/Index">Xem tất cả</a>
+        </div>
+        <div class="film-list swiper-wrapper">
+            @{
+                
+                index = 0;
+                foreach (var BoPhim in listBoPhimhay)
+                {
+                    index++;
+                    if (index > 6)
+                    {
+                        break;
+                    }
+                    foreach (var Phim in BoPhim)
+                    {
+                        <div class="film-item swiper-slide">
+                            <a href="~/UserWatch/Index/@Phim.IDPhim" class="film-post">
+                                <div class="film-image">
+                                    <img src="@Phim.LinkAnh" alt="">
+                                </div>
+                                <div class="film-watch">
+                                    <i class="ri-play-fill"></i>
+                                </div>
+                            </a>
+                            <h2 class="film-name">@Phim.Bo.TenBo</h2>
+                        </div>
+                        break;
+                    }
+                }
+            }
+
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+
+    <div class="kid-film main-content swiper mySwiper">
+        <div class="content-header">
+            <h2>Phim tình cảm</h2>
+            <a href="~/UserSearch/Index">Xem tất cả</a>
+        </div>
+        <div class="film-list swiper-wrapper">
+            @{                
+                index = 0;
+                foreach (var BoPhim in listBoPhimTC)
+                {
+                    index++;
+                    if (index > 6)
+                    {
+                        break;
+                    }
+                    foreach (var Phim in BoPhim)
+                    {
+                        <div class="film-item swiper-slide">
+                            <a href="~/UserWatch/Index/@Phim.IDPhim" class="film-post">
+                                <div class="film-image">
+                                    <img src="@Phim.LinkAnh" alt="">
+                                </div>
+                                <div class="film-watch">
+                                    <i class="ri-play-fill"></i>
+                                </div>
+                            </a>
+                            <h2 class="film-name">@Phim.Bo.TenBo</h2>
+                        </div>
+                        break;
+                    }
+                }
+            }
+
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+
+    <div class="vietnam-film main-content swiper mySwiper">
+        <div class="content-header">
+            <h2>Phim Việt Nam hay nhất</h2>
+            <a href="~/UserSearch/Index">Xem tất cả</a>
+        </div>
+        <div class="film-list swiper-wrapper">
+            @{
+                index = 0;
+                foreach (var BoPhim in listBoPhimVN)
+                {
+                    index++;
+                    if (index > 6)
+                    {
+                        break;
+                    }
+                    foreach (var Phim in BoPhim)
+                    {
+                        <div class="film-item swiper-slide">
+                            <a href="~/UserWatch/Index/@Phim.IDPhim" class="film-post">
+                                <div class="film-image">
+                                    <img src="@Phim.LinkAnh" alt="">
+                                </div>
+                                <div class="film-watch">
+                                    <i class="ri-play-fill"></i>
+                                </div>
+                            </a>
+                            <h2 class="film-name">@Phim.Bo.TenBo</h2>
+                        </div>
+                        break;
+                    }
+                }
+            }
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+    <div class="country-film main-content swiper mySwiper">
+        <div class="content-header">
+            <h2>Quốc gia</h2>
+        </div>
+        <div class="country-list swiper-wrapper">
+            @foreach (var QuocGia in listQuocGia)
+            {
+                <a href="~/UserSearch/SearchQuocGia/@QuocGia.IDQG" class="country-item swiper-slide">@QuocGia.TenQG</a>
+
+            }
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+</section>
+
+

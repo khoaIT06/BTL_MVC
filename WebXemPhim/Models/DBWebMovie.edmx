@@ -1,0 +1,437 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="PhimDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="BinhLuan">
+          <Key>
+            <PropertyRef Name="IDBL" />
+          </Key>
+          <Property Name="IDBL" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IDPhim" Type="int" Nullable="false" />
+          <Property Name="IDND" Type="int" Nullable="false" />
+          <Property Name="NDBL" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Bo">
+          <Key>
+            <PropertyRef Name="IDBo" />
+          </Key>
+          <Property Name="IDBo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TenBo" Type="nvarchar" MaxLength="200" />
+          <Property Name="SoTap" Type="int" />
+        </EntityType>
+        <EntityType Name="NguoiDung">
+          <Key>
+            <PropertyRef Name="IDND" />
+          </Key>
+          <Property Name="IDND" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TenND" Type="nvarchar" MaxLength="200" />
+          <Property Name="NgaySinh" Type="datetime" />
+          <Property Name="Email" Type="nvarchar" MaxLength="200" />
+          <Property Name="TaiKhoan" Type="nvarchar" MaxLength="200" />
+          <Property Name="MatKhau" Type="nvarchar(max)" />
+          <Property Name="VaiTro" Type="varchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="Phim">
+          <Key>
+            <PropertyRef Name="IDPhim" />
+          </Key>
+          <Property Name="IDPhim" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TenPhim" Type="nvarchar" MaxLength="200" />
+          <Property Name="DaoDien" Type="nvarchar" MaxLength="200" />
+          <Property Name="IDQG" Type="int" Nullable="false" />
+          <Property Name="NamSX" Type="int" />
+          <Property Name="ThoiLuong" Type="nvarchar" MaxLength="200" />
+          <Property Name="ChatLuong" Type="nvarchar" MaxLength="200" />
+          <Property Name="NgonNgu" Type="nvarchar" MaxLength="200" />
+          <Property Name="TheLoai" Type="nvarchar" MaxLength="200" />
+          <Property Name="LuotXem" Type="int" />
+          <Property Name="MoTa" Type="nvarchar(max)" />
+          <Property Name="LinkPhim" Type="nvarchar(max)" />
+          <Property Name="LinkAnh" Type="nvarchar(max)" />
+          <Property Name="Tap" Type="int" />
+          <Property Name="IDBo" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="QuocGia">
+          <Key>
+            <PropertyRef Name="IDQG" />
+          </Key>
+          <Property Name="IDQG" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TenQG" Type="nvarchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="TheLoai">
+          <Key>
+            <PropertyRef Name="IDTheLoai" />
+          </Key>
+          <Property Name="IDTheLoai" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TenTheLoai" Type="nvarchar" MaxLength="200" />
+        </EntityType>
+        <Association Name="fk_bl_nd">
+          <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="BinhLuan" Type="Self.BinhLuan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NguoiDung">
+              <PropertyRef Name="IDND" />
+            </Principal>
+            <Dependent Role="BinhLuan">
+              <PropertyRef Name="IDND" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_bl_phim">
+          <End Role="Phim" Type="Self.Phim" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="BinhLuan" Type="Self.BinhLuan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Phim">
+              <PropertyRef Name="IDPhim" />
+            </Principal>
+            <Dependent Role="BinhLuan">
+              <PropertyRef Name="IDPhim" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_phim_bo">
+          <End Role="Bo" Type="Self.Bo" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Phim" Type="Self.Phim" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Bo">
+              <PropertyRef Name="IDBo" />
+            </Principal>
+            <Dependent Role="Phim">
+              <PropertyRef Name="IDBo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_phim_qg">
+          <End Role="QuocGia" Type="Self.QuocGia" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Phim" Type="Self.Phim" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuocGia">
+              <PropertyRef Name="IDQG" />
+            </Principal>
+            <Dependent Role="Phim">
+              <PropertyRef Name="IDQG" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PhimDBModelStoreContainer">
+          <EntitySet Name="BinhLuan" EntityType="Self.BinhLuan" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Bo" EntityType="Self.Bo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NguoiDung" EntityType="Self.NguoiDung" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Phim" EntityType="Self.Phim" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="QuocGia" EntityType="Self.QuocGia" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TheLoai" EntityType="Self.TheLoai" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="fk_bl_nd" Association="Self.fk_bl_nd">
+            <End Role="NguoiDung" EntitySet="NguoiDung" />
+            <End Role="BinhLuan" EntitySet="BinhLuan" />
+          </AssociationSet>
+          <AssociationSet Name="fk_bl_phim" Association="Self.fk_bl_phim">
+            <End Role="Phim" EntitySet="Phim" />
+            <End Role="BinhLuan" EntitySet="BinhLuan" />
+          </AssociationSet>
+          <AssociationSet Name="fk_phim_bo" Association="Self.fk_phim_bo">
+            <End Role="Bo" EntitySet="Bo" />
+            <End Role="Phim" EntitySet="Phim" />
+          </AssociationSet>
+          <AssociationSet Name="fk_phim_qg" Association="Self.fk_phim_qg">
+            <End Role="QuocGia" EntitySet="QuocGia" />
+            <End Role="Phim" EntitySet="Phim" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PhimDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="BinhLuan">
+          <Key>
+            <PropertyRef Name="IDBL" />
+          </Key>
+          <Property Name="IDBL" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IDPhim" Type="Int32" Nullable="false" />
+          <Property Name="IDND" Type="Int32" Nullable="false" />
+          <Property Name="NDBL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="NguoiDung" Relationship="Self.fk_bl_nd" FromRole="BinhLuan" ToRole="NguoiDung" />
+          <NavigationProperty Name="Phim" Relationship="Self.fk_bl_phim" FromRole="BinhLuan" ToRole="Phim" />
+        </EntityType>
+        <EntityType Name="Bo">
+          <Key>
+            <PropertyRef Name="IDBo" />
+          </Key>
+          <Property Name="IDBo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TenBo" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="SoTap" Type="Int32" />
+          <NavigationProperty Name="Phims" Relationship="Self.fk_phim_bo" FromRole="Bo" ToRole="Phim" />
+        </EntityType>
+        <EntityType Name="NguoiDung">
+          <Key>
+            <PropertyRef Name="IDND" />
+          </Key>
+          <Property Name="IDND" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TenND" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="NgaySinh" Type="DateTime" Precision="3" />
+          <Property Name="Email" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="TaiKhoan" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="MatKhau" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="VaiTro" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="BinhLuans" Relationship="Self.fk_bl_nd" FromRole="NguoiDung" ToRole="BinhLuan" />
+        </EntityType>
+        <EntityType Name="Phim">
+          <Key>
+            <PropertyRef Name="IDPhim" />
+          </Key>
+          <Property Name="IDPhim" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TenPhim" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="DaoDien" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="IDQG" Type="Int32" Nullable="false" />
+          <Property Name="NamSX" Type="Int32" />
+          <Property Name="ThoiLuong" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ChatLuong" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="NgonNgu" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="TheLoai" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="LuotXem" Type="Int32" />
+          <Property Name="MoTa" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LinkPhim" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LinkAnh" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Tap" Type="Int32" />
+          <Property Name="IDBo" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="BinhLuans" Relationship="Self.fk_bl_phim" FromRole="Phim" ToRole="BinhLuan" />
+          <NavigationProperty Name="Bo" Relationship="Self.fk_phim_bo" FromRole="Phim" ToRole="Bo" />
+          <NavigationProperty Name="QuocGia" Relationship="Self.fk_phim_qg" FromRole="Phim" ToRole="QuocGia" />
+        </EntityType>
+        <EntityType Name="QuocGia">
+          <Key>
+            <PropertyRef Name="IDQG" />
+          </Key>
+          <Property Name="IDQG" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TenQG" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Phims" Relationship="Self.fk_phim_qg" FromRole="QuocGia" ToRole="Phim" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="TheLoai">
+          <Key>
+            <PropertyRef Name="IDTheLoai" />
+          </Key>
+          <Property Name="IDTheLoai" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TenTheLoai" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="fk_bl_nd">
+          <End Role="NguoiDung" Type="Self.NguoiDung" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="BinhLuan" Type="Self.BinhLuan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NguoiDung">
+              <PropertyRef Name="IDND" />
+            </Principal>
+            <Dependent Role="BinhLuan">
+              <PropertyRef Name="IDND" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_bl_phim">
+          <End Role="Phim" Type="Self.Phim" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="BinhLuan" Type="Self.BinhLuan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Phim">
+              <PropertyRef Name="IDPhim" />
+            </Principal>
+            <Dependent Role="BinhLuan">
+              <PropertyRef Name="IDPhim" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_phim_bo">
+          <End Role="Bo" Type="Self.Bo" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Phim" Type="Self.Phim" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Bo">
+              <PropertyRef Name="IDBo" />
+            </Principal>
+            <Dependent Role="Phim">
+              <PropertyRef Name="IDBo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_phim_qg">
+          <End Role="QuocGia" Type="Self.QuocGia" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Phim" Type="Self.Phim" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuocGia">
+              <PropertyRef Name="IDQG" />
+            </Principal>
+            <Dependent Role="Phim">
+              <PropertyRef Name="IDQG" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PhimDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="BinhLuans" EntityType="Self.BinhLuan" />
+          <EntitySet Name="Boes" EntityType="Self.Bo" />
+          <EntitySet Name="NguoiDungs" EntityType="Self.NguoiDung" />
+          <EntitySet Name="Phims" EntityType="Self.Phim" />
+          <EntitySet Name="QuocGias" EntityType="Self.QuocGia" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="TheLoais" EntityType="Self.TheLoai" />
+          <AssociationSet Name="fk_bl_nd" Association="Self.fk_bl_nd">
+            <End Role="NguoiDung" EntitySet="NguoiDungs" />
+            <End Role="BinhLuan" EntitySet="BinhLuans" />
+          </AssociationSet>
+          <AssociationSet Name="fk_bl_phim" Association="Self.fk_bl_phim">
+            <End Role="Phim" EntitySet="Phims" />
+            <End Role="BinhLuan" EntitySet="BinhLuans" />
+          </AssociationSet>
+          <AssociationSet Name="fk_phim_bo" Association="Self.fk_phim_bo">
+            <End Role="Bo" EntitySet="Boes" />
+            <End Role="Phim" EntitySet="Phims" />
+          </AssociationSet>
+          <AssociationSet Name="fk_phim_qg" Association="Self.fk_phim_qg">
+            <End Role="QuocGia" EntitySet="QuocGias" />
+            <End Role="Phim" EntitySet="Phims" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="PhimDBModelStoreContainer" CdmEntityContainer="PhimDBEntities">
+          <EntitySetMapping Name="BinhLuans">
+            <EntityTypeMapping TypeName="PhimDBModel.BinhLuan">
+              <MappingFragment StoreEntitySet="BinhLuan">
+                <ScalarProperty Name="IDBL" ColumnName="IDBL" />
+                <ScalarProperty Name="IDPhim" ColumnName="IDPhim" />
+                <ScalarProperty Name="IDND" ColumnName="IDND" />
+                <ScalarProperty Name="NDBL" ColumnName="NDBL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Boes">
+            <EntityTypeMapping TypeName="PhimDBModel.Bo">
+              <MappingFragment StoreEntitySet="Bo">
+                <ScalarProperty Name="IDBo" ColumnName="IDBo" />
+                <ScalarProperty Name="TenBo" ColumnName="TenBo" />
+                <ScalarProperty Name="SoTap" ColumnName="SoTap" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NguoiDungs">
+            <EntityTypeMapping TypeName="PhimDBModel.NguoiDung">
+              <MappingFragment StoreEntitySet="NguoiDung">
+                <ScalarProperty Name="IDND" ColumnName="IDND" />
+                <ScalarProperty Name="TenND" ColumnName="TenND" />
+                <ScalarProperty Name="NgaySinh" ColumnName="NgaySinh" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="TaiKhoan" ColumnName="TaiKhoan" />
+                <ScalarProperty Name="MatKhau" ColumnName="MatKhau" />
+                <ScalarProperty Name="VaiTro" ColumnName="VaiTro" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Phims">
+            <EntityTypeMapping TypeName="PhimDBModel.Phim">
+              <MappingFragment StoreEntitySet="Phim">
+                <ScalarProperty Name="IDPhim" ColumnName="IDPhim" />
+                <ScalarProperty Name="TenPhim" ColumnName="TenPhim" />
+                <ScalarProperty Name="DaoDien" ColumnName="DaoDien" />
+                <ScalarProperty Name="IDQG" ColumnName="IDQG" />
+                <ScalarProperty Name="NamSX" ColumnName="NamSX" />
+                <ScalarProperty Name="ThoiLuong" ColumnName="ThoiLuong" />
+                <ScalarProperty Name="ChatLuong" ColumnName="ChatLuong" />
+                <ScalarProperty Name="NgonNgu" ColumnName="NgonNgu" />
+                <ScalarProperty Name="TheLoai" ColumnName="TheLoai" />
+                <ScalarProperty Name="LuotXem" ColumnName="LuotXem" />
+                <ScalarProperty Name="MoTa" ColumnName="MoTa" />
+                <ScalarProperty Name="LinkPhim" ColumnName="LinkPhim" />
+                <ScalarProperty Name="LinkAnh" ColumnName="LinkAnh" />
+                <ScalarProperty Name="Tap" ColumnName="Tap" />
+                <ScalarProperty Name="IDBo" ColumnName="IDBo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="QuocGias">
+            <EntityTypeMapping TypeName="PhimDBModel.QuocGia">
+              <MappingFragment StoreEntitySet="QuocGia">
+                <ScalarProperty Name="IDQG" ColumnName="IDQG" />
+                <ScalarProperty Name="TenQG" ColumnName="TenQG" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="PhimDBModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TheLoais">
+            <EntityTypeMapping TypeName="PhimDBModel.TheLoai">
+              <MappingFragment StoreEntitySet="TheLoai">
+                <ScalarProperty Name="IDTheLoai" ColumnName="IDTheLoai" />
+                <ScalarProperty Name="TenTheLoai" ColumnName="TenTheLoai" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

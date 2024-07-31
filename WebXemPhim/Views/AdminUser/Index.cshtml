@@ -1,0 +1,370 @@
+﻿
+@{
+    ViewBag.TitlePage = "Quản lý người dùng";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@model List<WebXemPhim.Models.NguoiDung>
+
+@section ScriptUser {
+    <script src="~/JS/script-form-user.js"></script>
+    <script src="~/JS/script-check-user.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.user-text-search').on('input', function () {
+                var searchTerm = $(this).val();
+
+                $.ajax({
+                    url: '@Url.Action("SearchUsers", "AdminUser")',
+                    type: 'GET',
+                    data: { searchTerm: searchTerm },
+                    success: function (data) {
+                        var tbody = $('tbody');
+                        tbody.empty();
+
+                        $.each(data, function (index, user) {
+                            var ngaySinh = new Date(parseInt(user.NgaySinh.substr(6)));
+                            var formattedNgaySinh = ("0" + ngaySinh.getDate()).slice(-2) + "-"
+                                + ("0" + (ngaySinh.getMonth() + 1)).slice(-2) + "-"
+                                + ngaySinh.getFullYear();
+
+                            tbody.append(
+                                '<tr>' +
+                                '<td class="user-id">' + user.IDND + '</td>' +
+                                '<td class="user-fullname">' + user.TenND + '</td>' +
+                                '<td class="user-birthday">' + formattedNgaySinh + '</td>' +
+                                '<td class="user-email">' + user.Email + '</td>' +
+                                '<td class="user-name">' + user.TaiKhoan + '</td>' +
+                                '<td class="user-role">' + user.VaiTro + '</td>' +
+                                '<td class="user-action">' +
+                                '<div class="btn-change"><i class="ri-pencil-fill icon-change js-changeUser"></i></div>' +
+                                '<div class="btn-deleteMovie"><i class="ri-delete-bin-line icon-delete js-deleteUser"></i></div>' +
+                                '</td>' +
+                                '</tr>'
+                            );
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+        });
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var yyyy = today.getFullYear();
+        var maxDate = yyyy + '-' + mm + '-' + dd;
+        document.getElementById("user-birthday").setAttribute("max", maxDate);
+    </script>
+}
+
+
+<div class="wrapper-content">
+    <div class="table-header">
+        <h3 class="main-title">
+            Thông tin người dùng
+        </h3>
+        <div class="movie-search">
+            <input type="text" class="user-text-search text-search" placeholder="Tìm kiếm...">
+            <i class="ri-search-line icon-search"></i>
+        </div>
+        <div class="group-action-user">
+            <div class="add-movie js-updatePassword-admin"><i class="ri-key-line icon-add"></i>Đổi mật khẩu</div>
+            <div class="add-movie js-add-user"><i class="ri-add-large-line icon-add"></i>Thêm người dùng</div>
+        </div>
+    </div>
+</div>
+
+<div class="wrapper-content wrapper-content-body">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Họ và tên</th>
+                <th>Ngày sinh</th>
+                <th>Email</th>
+                <th>Tài khoản</th>
+                <th>Vai trò</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="user-id">@item.IDND</td>
+                    <td class="user-fullname">@item.TenND</td>
+                    <td class="user-birthday">@DateTime.Parse(item.NgaySinh.ToString()).ToString("dd-MM-yyyy")</td>
+                    <td class="user-email">@item.Email</td>
+                    <td class="user-name">@item.TaiKhoan</td>
+                    <td class="user-role">@item.VaiTro</td>
+                    <td class="user-action">
+                        <div class="btn-change-user">
+                            <i class="ri-pencil-fill icon-change js-changeUser"></i>
+                        </div>
+                        <div class="btn-recoverUser">
+                            <i class="ri-loop-left-line icon-recover js-recoverUser"></i>
+                        </div>
+                        <div class="btn-deleteUser">
+                            <i class="ri-delete-bin-line icon-delete js-deleteUser"></i>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @{
+        var page = Request.QueryString["page"];
+        int currentPage = 1;
+        if (!string.IsNullOrEmpty(page))
+        {
+            int.TryParse(page, out currentPage);
+        }
+    }
+    <div class="pagination">
+        @{
+            int PrevPage = ViewBag.Page - 1;
+            if (PrevPage <= 0)
+            {
+                PrevPage = 1;
+            }
+            int NextPage = ViewBag.Page + 1;
+            if (NextPage > ViewBag.NoOfPages)
+            {
+                NextPage = ViewBag.NoOfPages;
+            }
+        }
+        <a href="/AdminUser/Index?page=@PrevPage" class="prev">Trước</a>
+        @for (int i = 0; i < ViewBag.NoOfPages; i++)
+        {
+            var pageIndex = i + 1;
+            <a href="/AdminUser/Index?page=@pageIndex" class="@(pageIndex == currentPage ? "page-current" : "")">@pageIndex</a>
+        }
+        <a href="/AdminUser/Index?page=@NextPage" class="next">Sau</a>
+    </div>
+    <form class="form-with-toast" action="~/AdminUser/AddUser" method="post" enctype="multipart/form-data">
+        <div class="modal js-modal-addUser">
+            <div class="modal-container js-modal-addUser-container modal-container-user">
+                <div class="modal-close js-modal-addUser-close">
+                    <i class="ri-close-large-line"></i>
+                </div>
+
+                <header class="modal-header modal-header-movies">
+                    <i class="ri-user-add-line"></i>
+                    Thêm người dùng
+                </header>
+
+                <div class="modal-content">
+                    <div class="modal-twoCol">
+                        <label for="user-fullname" class="modal-label">
+                            Tên người dùng
+                            <input name="TenND" id="user-fullname" type="text" class="js-user-fullname modal-input" placeholder="Tên người dùng...">
+                            <span class="check-error name-addUser-error"></span>
+                        </label>
+
+                        <label for="user-birthday" class="modal-label">
+                            Ngày sinh
+                            <input name="NgaySinh" id="user-birthday" type="date" value="2003-06-24" min="1900-01-01" max="9999-12-31" class="js-user-birthday modal-input" placeholder="Ngày sinh...">
+                            <span class="check-error birthday-addUser-error"></span>
+                        </label>
+
+                        <label for="user-email" class="modal-label">
+                            Email
+                            <input name="Email" id="user-email" type="email" class="js-user-email modal-input" placeholder="Email...">
+                            <span class="check-error email-addUser-error"></span>
+                        </label>
+
+                        <label for="user-name" class="modal-label">
+                            Tài khoản
+                            <input name="TaiKhoan" id="user-name" type="text" class="js-user-name modal-input" placeholder="Tài khoản...">
+                            <span class="check-error username-addUser-error"></span>
+                        </label>
+
+                        <label for="user-password" class="modal-label">
+                            Mật khẩu
+                            <input name="MatKhau" id="user-password" type="password" class="js-user-password modal-input" placeholder="Mật khẩu...">
+                            <span class="check-error password-addUser-error"></span>
+                        </label>
+
+                        <label for="user-confirm-password" class="modal-label">
+                            Xác nhận lại mật khẩu
+                            <input name="XacNhanMatKhau" id="user-confirm-password" type="password" class="js-user-confirmPassword modal-input" placeholder="Xác nhận lại mật khẩu...">
+                            <span class="check-error confirmPassword-addUser-error"></span>
+                        </label>
+
+                        <label for="user-role-add" class="modal-label">
+                            Vai trò
+                            <select name="VaiTro" id="user-role-add" class="modal-input">
+                                <option value="Admin">Admin</option>
+                                <option value="User">User</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="action-form">
+                        <div class="cancel-movie js-cancel-user">
+                            Trở lại
+                        </div>
+                        <input type="submit" class="submit-movie js-addUser" value="Thêm"
+                               data-toast-title="Thành công"
+                               data-toast-message="Thêm người dùng thành công"
+                               data-toast-type="success"
+                               data-toast-duration="3000"
+                               onclick="return checkAddUser()">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form class="form-with-toast" action="~/AdminUser/UpdateUser" method="post" enctype="multipart/form-data">
+        <div class="modal js-modal-changeUser">
+            <div class="modal-container modal-container-changeUser js-modal-changeUser-container">
+                <div class="modal-close js-modal-changeUser-close">
+                    <i class="ri-close-large-line"></i>
+                </div>
+
+                <header class="modal-header modal-header-movies">
+                    <i class="ri-user-line"></i>
+                    Cập nhật thông tin người dùng
+                </header>
+
+                <div class="modal-content">
+                    <div class="modal-twoCol">
+                        <input name="IDND" id="user-id" type="hidden" class="js-user-id-change modal-input">
+                        <label for="user-fullname-change" class="modal-label">
+                            Tên người dùng
+                            <input name="TenND" id="user-fullname-change" type="text" class="js-user-fullname-change modal-input" placeholder="Tên người dùng...">
+                            <span class="check-error fullname-updateUser-error"></span>
+                        </label>
+
+                        <label for="user-birthday-change" class="modal-label">
+                            Ngày sinh
+                            <input name="NgaySinh" id="user-birthday-change" type="date" class="js-user-birthday-change modal-input" placeholder="Ngày sinh...">
+                            <span class="check-error birthday-updateUser-error"></span>
+                        </label>
+
+                        <label for="user-email-change" class="modal-label">
+                            Email
+                            <input name="Email" id="user-email-change" type="email" class="js-user-email-change modal-input" placeholder="Email...">
+                            <span class="check-error email-updateUser-error"></span>
+                        </label>
+
+                        <label for="user-role-change" class="modal-label">
+                            Vai trò
+                            <select name="VaiTro" id="user-role-change" class="modal-input js-user-role-change">
+                                <option value="Admin">Admin</option>
+                                <option value="User">User</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="action-form">
+                        <div class="cancel-movie js-cancel-user-change">
+                            Trở lại
+                        </div>
+                        <input type="submit"
+                               data-toast-title="Thành công"
+                               data-toast-message="Cập nhật thông tin người dùng thành công"
+                               data-toast-type="success"
+                               data-toast-duration="3000"
+                               class="submit-movie js-btnChangeUser" onclick="return checkUpdateUser()" value="Cập nhật" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form class="form-with-toast" action="~/AdminUser/UpdatePasswordAdmin" method="post" enctype="multipart/form-data">
+        <div class="modal js-modal-updatePasswordAdmin">
+            <div class="modal-container modal-container-passwordAdmin js-modal-updatePasswordAdmin-container">
+                <div class="modal-close js-modal-updatePasswordAdmin-close">
+                    <i class="ri-close-large-line"></i>
+                </div>
+
+                <header class="modal-header modal-header-movies">
+                    <i class="ri-lock-password-line"></i>
+                    Đổi mật khẩu
+                </header>
+
+                <div class="modal-content">
+                    <div class="modal-twoCol">
+                        <label for="pass-update-password-admin" class="modal-label">
+                            Mật khẩu mới
+                            <input name="MatKhau" id="pass-update-password-admin" type="password" class="js-password-admin modal-input" placeholder="Mật khẩu mới...">
+                            <span class="check-error password-admin-error"></span>
+                        </label>
+
+                        <label for="cfpass-update-password-admin" class="modal-label">
+                            Xác nhận mật khẩu
+                            <input name="XacNhanMatKhau" id="cfpass-update-password-admin" type="password" class="js-cfpassword-admin modal-input" placeholder="Xác nhận mật khẩu...">
+                            <span class="check-error cfpassword-admin-error"></span>
+                        </label>
+                    </div>
+                    <div class="action-form">
+                        <div class="cancel-movie js-cancel-password-admin">
+                            Trở lại
+                        </div>
+                        <input type="submit"
+                               data-toast-title="Thành công"
+                               data-toast-message="Đổi mật khẩu thành công"
+                               data-toast-type="success"
+                               data-toast-duration="3000"
+                               class="submit-movie js-btnUpdatePasswordAdmin" onclick="return checkUpdatePasswordAdmin()" value="Cập nhật" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form class="form-with-toast" action="~/AdminUser/DeleteUser" method="post" enctype="multipart/form-data">
+        <div class="modal-delete js-modal-deleteUser">
+            <div class="modal-delete-container js-modal-deleteUser-container">
+                <div class="modal-delete-close js-modal-deleteUser-close">
+                    <i class="ri-close-large-line"></i>
+                </div>
+                <div class="modal-delete-body">
+                    <input name="IDND" id="user-id-delete" type="hidden" class="js-user-id-delete modal-input">
+                    <p>Bạn có chắc muốn xóa thông tin người dùng?</p>
+                    <div class="btn-delete-choose">
+                        <input type="submit" value="Có"
+                               data-toast-title="Thành công"
+                               data-toast-message="Xóa thông tin người dùng thành công"
+                               data-toast-type="success"
+                               data-toast-duration="3000"
+                               class="btn-yes js-user-btn-yes"/>
+                        <div class="btn-no js-user-btn-no">
+                            <a href="#">Không</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form class="form-with-toast" action="~/AdminUser/RecoverPassword" method="post" enctype="multipart/form-data">
+        <div class="modal-delete js-modal-recoverUser">
+            <div class="modal-delete-container js-modal-recoverUser-container">
+                <div class="modal-delete-close js-modal-recoverUser-close">
+                    <i class="ri-close-large-line"></i>
+                </div>
+                <div class="modal-delete-body">
+                    <input name="IDND" id="user-id-recover" type="hidden" class="js-user-id-recover modal-input">
+                    <p>Bạn có chắc muốn khôi phục mật khẩu người dùng này?</p>
+                    <div class="btn-delete-choose">
+                        <input type="submit" value="Có"
+                               data-toast-title="Thành công"
+                               data-toast-message="Khôi phục mật khẩu người dùng thành công"
+                               data-toast-type="success"
+                               data-toast-duration="3000"
+                               class="btn-yes js-user-recover-btn-yes" />
+                        <div class="btn-no js-user-recover-btn-no">
+                            <a href="#">Không</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
